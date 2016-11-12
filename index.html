@@ -111,7 +111,8 @@
 						outputElement.push("col_" + i.padLeft(4, 0) +"_row_" + j.padLeft(4,0) +"_zstacked.jpg");		
 					}
 					else {
-						outputElement.push("photo" + (count + startNumber).padLeft(5,0) +".jpg");
+						var currentNumber = count + parseInt(startNumber);
+						outputElement.push("photo" + currentNumber.padLeft(5,0) +".jpg");
 						count++;
 					}
 					outputElement.push(-3.10048*(1.0-xOverlap)*(i-1));

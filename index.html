@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera Position Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" crossorigin="anonymous">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body class="container">
+    <form action="" method="POST" class="form-horizontal" role="form">
+        <div class="form-group">
+            <legend>Camera Position Calculator</legend>
+        </div>
+        <div class="form-group">
+            <label for="inputImageType" class="col-sm-2 control-label">Image Type:</label>
+            <div class="col-sm-10">
+                <select name="imageType" id="inputImageType" class="form-control">
+                    <option value="z">Z Stacked</option>
+                    <option value="u">Unstacked</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputStart Number" class="col-sm-2 control-label">Start Number:</label>
+            <div class="col-sm-10">
+                <input type="text" name="Start Number" id="inputStartNumber" class="form-control" required="required" title="">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="inputX Overlap" class="col-sm-2 control-label">X Overlap:</label>
+					<div class="col-sm-10">
+						<input type="text" name="XOverlap" id="inputXOverlap" class="form-control"  required="required" title="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputY Overlap" class="col-sm-2 control-label">Y Overlap:</label>
+            <div class="col-sm-10">
+                <input type="text" name="YOverlap" id="inputYOverlap" class="form-control"  required="required" title="">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="inputColumns" class="col-sm-2 control-label">Columns:</label>
+					<div class="col-sm-10">
+						<input type="text" name="Columns" id="inputColumns" class="form-control"  required="required" title="">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputRows" class="col-sm-2 control-label">Rows:</label>
+            <div class="col-sm-10">
+                <input type="text" name="Rows" id="inputRows" class="form-control" required="required" title="">
+					</div>
+				</div>
+		
+				<div class="form-group">
+					<div class="col-sm-10 col-sm-offset-2">
+						<button type="button" class="calculate btn btn-primary">Calculate</button>
+					</div>
+				</div>
+		</form>
+
+		
+		<table id="outputTable" class="display" width="100%"></table>
+
+
+		<!-- jQuery -->
+		<script src="//code.jquery.com/jquery.js"></script>
+		
+		<!-- Bootstrap JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+		<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+		<script src="//cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+		<script src="//cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
+		<script src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+ 		<script src="Hello World"></script>
+ 		<script>
+		Number.prototype.padLeft = function (n,str){
+    		return Array(n-String(this).length+1).join(str||'0')+this;
+		}
+		var ourTable = null;
+
+		$(".calculate").on("click",function(e) {
+			e.preventDefault();
+			var columns = $("#inputColumns").val();
+			var rows = $("#inputRows").val();
+			var yOverlap = $("#inputYOverlap").val();
+			var xOverlap = $("#inputXOverlap").val();
+			var startNumber = $("#inputStartNumber").val();
+			var imageType = $("#inputImageType").val();
+
+			var outputArray = [];
+			var count = 0;
+			for (var i=1;i<=columns;i++) {
+				for (var j=1;j<=rows;j++) {
+					var outputElement = [];
+					if (imageType=='z') {
+						outputElement.push("col_" + i.padLeft(4, 0) +"_row_" + j.padLeft(4,0) +"_zstacked.jpg");		
+					}
+					else {
+						var currentNumber = count + parseInt(startNumber);
+						outputElement.push("photo" + currentNumber.padLeft(5,0) +".jpg");
+						count++;
+					}
+					outputElement.push(-3.10048*(1.0-xOverlap)*(i-1));
+					outputElement.push(-2.07768*(1.0-yOverlap)*(j-1));
+					outputElement.push(0);
+					outputElement.push(-180);
+					outputElement.push(0);
+					outputElement.push(0);
+					outputArray.push(outputElement);
+				}
+			}
+			if(ourTable) {
+				ourTable.destroy();
+			}
+
+			ourTable = $('#outputTable').DataTable( {
+		        dom: 'Bfrtip',
+		        data: outputArray,
+		        paging: false,
+		        buttons: [
+        {
+            extend: 'csvHtml5',
+            text: 'Download CSV',
+            fieldBoundary: "",
+            header: false
+        }
+    ],
+		        columns: [
+	            // { title:"#Cameras (" + rows+columns +")" },
+	            { title:"# PhotoID" },
+	            { title:"X" },
+	            { title:"Y" },
+	            { title:"Z" },
+	            { title:"Omega" },
+	            { title:"Phi" },
+	            { title:"Kappa" }
+	        	]
+		    } );
+
+		});
+
+
+		</script>
+	</body>
+</html>
